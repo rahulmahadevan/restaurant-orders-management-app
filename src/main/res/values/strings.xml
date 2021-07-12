@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">The Weekend Cafe - Orders</string>
+    <string name="tab_title_ongoing">Ongoing</string>
+    <string name="tab_title_completed">Completed</string>
+    <string name="new_order">New Order</string>
+
+</resources>
