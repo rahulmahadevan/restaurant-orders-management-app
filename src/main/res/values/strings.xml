@@ -2,6 +2,11 @@
     <string name="app_name">The Weekend Cafe - Orders</string>
     <string name="tab_title_ongoing">Ongoing</string>
     <string name="tab_title_completed">Completed</string>
-    <string name="new_order">New Order</string>
+    <string name="new_order">Menu</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="welcome">Welcome to Orders App</string>
+    <string name="shared_prefs">login_info</string>
+    <string name="token">thisIsATemporaryToken</string>
+    <string name="url">http://192.168.43.142:8044/</string>
 
 </resources>

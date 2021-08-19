@@ -7,89 +7,80 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.breathetofunction.theweekendcafeorders.ui.main.SectionsPagerAdapter;
-import com.breathetofunction.theweekendcafeorders.databinding.ActivityMainBinding;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
 
 import static com.breathetofunction.theweekendcafeorders.Utils.makePostRequest;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    String TAG = "MAIN ACTIVITY";
-    private ActivityMainBinding binding;
+    String TAG = "LOGIN ACTIVITY";
+    Button login;
+    EditText tvId, tvPassword;
+    String id, password;
+    String SHARED_PREFS;
 
-    private int[] tabIcons = {
-            R.drawable.tab_img,
-            R.drawable.tab_img2
-    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String requestUrl = getApplicationContext().getResources().getString(R.string.url)+"fetchMenu";
-        String requestUrlForOrders = getApplicationContext().getResources().getString(R.string.url)+"fetchOrders";
-        String authToken = getApplicationContext().getResources().getString(R.string.token);
+        setContentView(R.layout.activity_login);
+        String requestUrl = getApplicationContext().getResources().getString(R.string.url)+"serverLogin";
+        String authToken = getApplicationContext().getResources().getString(R.string.token) ;
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        login = findViewById(R.id.btn_login);
+        tvId = findViewById(R.id.tv_id);
+        tvPassword = findViewById(R.id.tv_password);
+        SHARED_PREFS = Integer.toString(R.string.shared_prefs);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = binding.viewPager;
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = binding.tabs;
-        tabs.setupWithViewPager(viewPager);
-        setUpTabIcons(tabs);
-        FloatingActionButton fab = binding.fab;
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("StaticFieldLeak")
             @Override
-            public void onClick(View view) {
-                String jsonBody = String.format("{ \"token\": \"%s\" }", authToken);
-                Log.d(TAG, "onClick: " + jsonBody);
-                //Auth with server and fetch Menu
+            public void onClick(View v) {
+                id = tvId.getText().toString();
+                password = tvPassword.getText().toString();
+                String jsonBody = String.format("{ \"token\": \"%s\", \"id\": %s, \"pwd\": \"%s\" }", authToken, id, password);
+                Log.d("JSON BODY", "onClick: " + jsonBody);
+                //Auth with server
+
                 new AsyncTask<String, String, String>() {
-                    final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+                    final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        dialog.setMessage("Loading Menu...");
+                        dialog.setMessage("Logging in...");
                         dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
                     }
 
                     @Override
                     protected String doInBackground(String... params) {
+
                         try {
+                            Log.d(TAG, "REQUEST URL: "+ requestUrl);
                             String response = makePostRequest(requestUrl, jsonBody, getApplicationContext());
-                            Log.d(TAG, "HTTP Response: " + response);
+                            Log.d(TAG, "HTTP RESPONSE: " + response);
                             return response;
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -107,11 +98,17 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
                                 String responseCode = jsonResponse.getString("responseCode");
-                                JSONArray data = new JSONArray(jsonResponse.getString("data"));
-                                Log.d(TAG, "JSON DATA ARRAY: "+data);
+                                JSONObject data = new JSONObject(jsonResponse.getString("data"));
+                                String name = data.getString("name");
+                                Log.d(TAG, "response: " + responseCode + ", name:" + name);
                                 if (responseCode.equals("200")) {
-                                    Intent intent = new Intent("android.intent.action.MenuSelection");
-                                    intent.putExtra("menuData", data.toString());
+                                    SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).edit();
+                                    editor.putString("id", id);
+                                    editor.putString("pass", password);
+                                    editor.apply();
+
+                                    Intent intent = new Intent("android.intent.action.MainActivity");
+                                    intent.putExtra("name", name);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Oops... Something went wrong!", Toast.LENGTH_LONG).show();
@@ -126,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpTabIcons(TabLayout tabs){
-        tabs.getTabAt(0).setIcon(tabIcons[0]);
-        tabs.getTabAt(1).setIcon(tabIcons[1]);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 }
-

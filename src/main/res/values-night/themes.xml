@@ -7,7 +7,9 @@
         <item name="colorOnPrimary">@color/light_bluish_grey</item>
 
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorOnPrimary</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 </resources>

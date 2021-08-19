@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_quant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="1x"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_item"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="TOFU BURGER"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:text="Rs. 300"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20sp" />
+</LinearLayout>
