@@ -1,11 +1,16 @@
 # theweekendcafe - Orders
 
-What's going on:
-1. Order details are written in book manually
-2. Menu is available in Instagram
+App Functionality:
 
-What can be done:
-1. Is there a better way to view menu?
-2. Local DB to store orders info
-3. Waiters can connect to local network to take orders from customers
-4. A web Interface for Person-in-counter to view orders, and other order related info
+
+Authorized users (user's whose info in added in DB by admin) can only login, such a user is refered to Waiter
+
+Waiter can view Menu fetched from DB and easily select item with quantity for a new order
+
+Order summary is shown with all items, quantites, and total amount
+
+Once order is submitted, a JSON object is created with order info and sent to server using REST API
+
+In Home Page, ongoing orders can be viewed and selected to view order summary and edit order by adding more items
+
+Once an order is completed and bill is paid, the waiter can close the order and the order status is updated in the DB
